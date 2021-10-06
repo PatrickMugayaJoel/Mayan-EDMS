@@ -1,0 +1,84 @@
+<div class="container" style="width: 90%; margin: auto;">
+  <div class="well center-block" style="margin: 30px 0px;">
+    <div class="row">
+      <div class="col-xs-12">
+        <form
+          action="/workflows/reports"
+          class="form-horizontal"
+          id="reportSearch"
+          method="get"
+          role="search"
+        >
+          <div class="col-sm-4">
+            <div class="input-group">
+                <select
+                class="form-control"
+                id="selectWorkflow"
+                name="workflow_id"
+                >
+                <option {% if workflow_id == '1' %}selected=""{%endif%} value="1">Claims Workflow</option>
+                <option {% if workflow_id == '13' %}selected=''{%endif%} value="13">Medical Refund Workflow</option>
+                </select><span class="input-group-btn"
+                ><button class="btn btn-default" type="submit">Search</button
+                ></span>
+            </div>
+          </div>
+          <div class="pull-right">
+            <div class="pagination">
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="/workflows/reports?workflow_id={{workflow_id}}&page=1">&laquo; first</a>
+                        <a href="/workflows/reports?workflow_id={{workflow_id}}&page={{ page_obj.previous_page_number }}">previous</a>
+                    {% endif %}
+            
+                    <span class="current">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                    </span>
+            
+                    {% if page_obj.has_next %}
+                        <a href="/workflows/reports?workflow_id={{workflow_id}}&page={{ page_obj.next_page_number }}">next</a>
+                        <a href="/workflows/reports?workflow_id={{workflow_id}}&page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  {%if not page_obj.object_list %}<div class="row" style="text-align: center;">No Transitions to Display!</div>{% else %}
+
+  <h2>{{title}}</h2>
+
+  <div class="row" style="overflow-x: scroll; margin: 0px;">
+    <table class="table table-striped">
+      <tbody>
+        {% for transaction in page_obj.object_list %}
+        <tr>
+          <td colspan="100">
+            <a href="{{transaction.url}}" target="_blank"><i class="fas fa-file-alt"></i></a>
+          </td>
+        </tr>
+        <tr>
+          {% for state in transaction.states %}
+          <td style="min-width: 170px; max-width: 170px">
+            {{state.date}}<br />{{state.state}}
+          </td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- {% for transaction in trans %}
+        <div class="row" style="overflow-x: auto; white-space: nowrap; margin: 0px;">
+            <div style="display: inline-block; float: none;">
+                {{transaction.id}}<br>
+            </div>
+        </div>
+    {%endfor%} -->
+
+  {% endif %}
+</div>

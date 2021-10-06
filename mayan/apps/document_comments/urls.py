@@ -4,13 +4,17 @@ from .api_views import APICommentListView, APICommentView
 from .views import (
     DocumentCommentCreateView, DocumentCommentDeleteView,
     DocumentCommentDetailView, DocumentCommentEditView,
-    DocumentCommentListView
+    DocumentCommentListView, DocumentCommentListPrint
 )
 
 urlpatterns = [
     url(
         regex=r'^documents/(?P<document_id>\d+)/comments/$',
         name='comments_for_document', view=DocumentCommentListView.as_view()
+    ),
+    url(
+        regex=r'^approvals/(?P<document_id>\d+)/print/$',
+        name='print_comments_for_document', view=DocumentCommentListPrint.as_view()
     ),
     url(
         regex=r'^documents/(?P<document_id>\d+)/comments/add/$',

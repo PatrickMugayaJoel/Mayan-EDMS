@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 from .api_views.document_api_views import (
     APIDocumentDetailView, APIDocumentListView, APIDocumentChangeTypeView,
-    APIDocumentUploadView
+    APIDocumentUploadView, APISendMailReminders
 )
 from .api_views.document_file_api_views import (
     APIDocumentFileDetailView, APIDocumentFileDownloadView,
@@ -590,6 +590,10 @@ api_urls_document_files = [
 ]
 
 api_urls_document_types = [
+    url(
+        regex=r'^send/reminders/$',
+        name='send_mail_reminders', view=APISendMailReminders.as_view()
+    ),
     url(
         regex=r'^document_types/$', name='documenttype-list',
         view=APIDocumentTypeListView.as_view()

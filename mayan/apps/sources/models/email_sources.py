@@ -5,6 +5,7 @@ import poplib
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.db import models
+from mayan.apps.user_management.models import UserExtras
 from django.utils.encoding import force_bytes, force_text
 from django.utils.translation import ugettext_lazy as _
 
@@ -90,25 +91,69 @@ class EmailBaseModel(IntervalBaseModel):
         message = mime.from_string(force_bytes(s=message_text))
 
         if source.from_metadata_type:
-            metadata_dictionary[
-                source.from_metadata_type.name
-            ] = message.headers.get('From')
+            try:
+                start = message.headers.get('From').index("<")
+                metadata_dictionary[
+                    source.from_metadata_type.name
+                ] = message.headers.get('From')[start+1:-1]
+            except:
+                metadata_dictionary[
+                    source.from_metadata_type.name
+                ] = message.headers.get('From')
 
         if source.subject_metadata_type:
             metadata_dictionary[
                 source.subject_metadata_type.name
-            ] = message.headers.get('Subject')
+            ] = message.headers.get('Subject').upper()
+
+        if 'PAYMENT' in metadata_dictionary[source.subject_metadata_type.name]:
+            metadata_dictionary['supervisor'] = None
+
+            if message.headers.get('Cc'):
+                metadata_dictionary['supervisor'] = EmailBaseModel._select_email(message.headers.get('Cc'))
+
+            if not metadata_dictionary['supervisor'] and message.headers.get("To"):
+                metadata_dictionary['supervisor'] = EmailBaseModel._select_email(message.headers.get('To'))
+
+        if 'LEAVE' in metadata_dictionary[source.subject_metadata_type.name]:
+            the_email = metadata_dictionary[source.from_metadata_type.name]
+            for user_info in UserExtras.objects.raw(f"SELECT * FROM nic_employee WHERE employee = '{the_email}';"):
+                metadata_dictionary['supervisor'] = user_info.supervisor
+                break
 
         document_ids, parts_metadata_dictionary = EmailBaseModel._process_message(source=source, message=message)
 
         metadata_dictionary.update(parts_metadata_dictionary)
 
-        if metadata_dictionary:
-            for document in Document.objects.filter(id__in=document_ids):
-                set_bulk_metadata(
-                    document=document,
-                    metadata_dictionary=metadata_dictionary
-                )
+        if document_ids:
+            metadata_dictionary["id"] = document_ids[0]
+            metadata_dictionary["hasMultipleAttachments"] = len(document_ids)
+
+            if metadata_dictionary:
+                for document in Document.objects.filter(id__in=document_ids):
+                    set_bulk_metadata(
+                        document=document,
+                        metadata_dictionary=metadata_dictionary
+                    )
+
+    @staticmethod
+    def _select_email(emailslist):
+        for x in emailslist.split(","):
+            mail = EmailBaseModel._process_email(x)
+            if mail == "edms@nic.co.ug":
+                continue
+            else:
+                return mail
+        return None
+
+    @staticmethod
+    def _process_email(email):
+        try:
+            start = email.index("<")
+            if start:
+                return email[start+1:-1]
+        except:
+            return email.strip()
 
     @staticmethod
     def _process_message(source, message):
@@ -165,16 +210,16 @@ class EmailBaseModel(IntervalBaseModel):
                 else:
                     label = 'email_body.txt'
 
-                if source.store_body:
-                    with ContentFile(content=force_bytes(s=message.body), name=label) as file_object:
-                        documents = source.handle_upload(
-                            document_type=source.document_type,
-                            expand=SOURCE_UNCOMPRESS_CHOICE_N,
-                            file_object=file_object
-                        )
+                    if source.store_body:
+                        with ContentFile(content=force_bytes(s=message.body), name=label) as file_object:
+                            documents = source.handle_upload(
+                                document_type=source.document_type,
+                                expand=SOURCE_UNCOMPRESS_CHOICE_N,
+                                file_object=file_object
+                            )
 
-                        for document in documents:
-                            document_ids.append(document.pk)
+                            for document in documents:
+                                document_ids.append(document.pk)
 
         return document_ids, metadata_dictionary
 

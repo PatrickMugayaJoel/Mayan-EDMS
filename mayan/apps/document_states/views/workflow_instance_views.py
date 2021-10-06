@@ -1,9 +1,13 @@
+import dateutil.parser
+
 from django.contrib import messages
+from django.views import View
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
+from django.core.paginator import Paginator
 
 from mayan.apps.acls.models import AccessControlList
 from mayan.apps.documents.models import Document
@@ -242,3 +246,51 @@ class WorkflowInstanceTransitionSelectView(ExternalObjectViewMixin, FormView):
             'user': self.request.user,
             'workflow_instance': self.external_object
         }
+
+class WorkflowDocumentsReport(View):
+    template_name = 'appearance/workflow_report.html'
+
+    def get(self, request, *args, **kwargs): # {kwargs.get("workflow_id")} claims_workflow_id is '13'
+        trans = []
+
+        transitions = Document.objects.raw(f"""SELECT swi.document_id AS id, json_agg(swil.datetime) AS dates,
+                json_agg(sws_d.label) AS dest
+                FROM document_states_workflowinstance swi, document_states_workflowinstancelogentry swil,
+                document_states_workflowtransition swt,
+                document_states_workflowstate sws_d
+                WHERE
+                    swi.workflow_id = {request.GET.get('workflow_id', 1)}
+                    AND swil.workflow_instance_id = swi.id
+                    AND swil.transition_id = swt.id
+                    AND swt.destination_state_id = sws_d.id
+                group by swi.document_id
+                order by swi.document_id desc;""")
+
+        for transition in transitions:
+            if len(transition.dates) > 2:
+                tempObj = {}
+                tempObj['id'] = transition.id
+                tempObj['url'] = f"/documents/documents/{transition.id}/preview/"
+                states = []
+
+                for i in range(len(transition.dates)):
+                    states.append({
+                        "date":dateutil.parser.isoparse(transition.dates[i]).strftime("%a %d, %b %y"),
+                        "state":transition.dest[i],
+                        "sortie": transition.dates[i]
+                    })
+
+                tempObj['states'] = sorted(states, key = lambda i: i['sortie'])
+                states.clear()
+                trans.append(tempObj)
+
+        paginator = Paginator(trans, 15)
+        page_number = request.GET.get('page', 1)
+        workflow_id = request.GET.get('workflow_id', 1)
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            'title': 'Medical Refund workflow' if (workflow_id == '13') else 'Claims workflow',
+            'page_obj': page_obj, "workflow_id": workflow_id
+        }
+        return render(request, self.template_name, context)

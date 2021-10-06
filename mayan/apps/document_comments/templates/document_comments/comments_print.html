@@ -1,0 +1,45 @@
+{% extends 'appearance/base_plain.html' %}
+
+{% load i18n %}
+
+{% block title %}{{ title }}{% endblock title %}
+
+{% block content_plain %}
+    <div class="row">
+        Reference No: {% if object.metadata_value_of.id %}{{ object.metadata_value_of.id }}{% else %}{% if object.metadata_value_of.claim_number %}{{ object.metadata_value_of.claim_number }}{% else %}{{ object.metadata_value_of.policy_number }}{% endif %}{% endif %}<br>
+        <div class="center-block">
+            <div class="table-responsive">
+                <table class="table table-striped" style="margin-top: 10px">
+                    <thead class="well" style="text-align: left;">
+                        <tr>
+                            <th style="width: 25%;">
+                                <span style="white-space: nowrap;">
+                                    <span class="appearance-list-column-label">Date time submitted</span>
+                                </span>
+                            </th>
+                            <th style="width: 15%;">
+                                <span style="white-space: nowrap;">
+                                    <span class="appearance-list-column-label">Username</span>
+                                </span>
+                            </th>
+                            <th>
+                                <span style="white-space: nowrap;">
+                                    <span class="appearance-list-column-label">Comment</span>
+                                </span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for comment in comments %}
+                        <tr>
+                            <td><span class="appearance-list-column-label">{{ comment.submit_date }}</span></td>
+                            <td>{{ comment.user.username }}</td>
+                            <td>{{ comment.comment }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

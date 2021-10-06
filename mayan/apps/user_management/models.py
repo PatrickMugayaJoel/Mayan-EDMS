@@ -29,3 +29,37 @@ class UserOptions(models.Model):
     def natural_key(self):
         return self.user.natural_key()
     natural_key.dependencies = [settings.AUTH_USER_MODEL]
+
+class UserExtras(models.Model):
+    """
+    Model used to link a user to organizational information.
+    """
+    employee = models.CharField(
+        primary_key=True,
+        blank=True, db_index=True, help_text=_(
+            'The employee.'
+        ), max_length=255, verbose_name=_('employee')
+    )
+    company = models.CharField(
+        blank=True, db_index=True, help_text=_(
+            'The company.'
+        ), max_length=255, null=True, verbose_name=_('company')
+    )
+    department = models.CharField(
+        blank=True, db_index=True, help_text=_(
+            'The department.'
+        ), max_length=255, null=True, verbose_name=_('department')
+    )
+    supervisor = models.CharField(
+        blank=True, db_index=True, help_text=_(
+            'The supervisor.'
+        ), max_length=255, null=True, verbose_name=_('supervisor')
+    )
+
+    class Meta:
+        db_table = 'nic_employee'
+        verbose_name = _('employee information')
+        verbose_name_plural = _('employees information')
+
+    def __str__(self):
+        return force_text(s=self.employee)

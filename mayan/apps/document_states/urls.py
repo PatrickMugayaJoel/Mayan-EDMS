@@ -16,7 +16,7 @@ from .api_views import (
 )
 from .views.workflow_instance_views import (
     WorkflowInstanceDetailView, WorkflowInstanceListView,
-    WorkflowInstanceTransitionSelectView,
+    WorkflowInstanceTransitionSelectView, WorkflowDocumentsReport,
     WorkflowInstanceTransitionExecuteView
 )
 from .views.workflow_proxy_views import (
@@ -54,6 +54,10 @@ urlpatterns_workflow_instances = [
         regex=r'^documents/(?P<document_id>\d+)/workflows/$',
         name='workflow_instance_list',
         view=WorkflowInstanceListView.as_view()
+    ),
+    url(
+        regex=r'^reports/$', name='workflow-report',
+        view=WorkflowDocumentsReport.as_view()
     ),
     url(
         regex=r'^documents/workflows/(?P<workflow_instance_id>\d+)/$',

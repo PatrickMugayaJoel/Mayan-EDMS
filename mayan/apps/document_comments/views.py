@@ -9,6 +9,9 @@ from mayan.apps.views.generics import (
 )
 from mayan.apps.views.mixins import ExternalObjectViewMixin
 
+from ..documents.settings import (
+    setting_print_width, setting_print_height
+)
 from .forms import DocumentCommentDetailForm
 from .icons import icon_comments_for_document
 from .links import link_comment_add
@@ -148,6 +151,36 @@ class DocumentCommentListView(ExternalObjectViewMixin, SingleObjectListView):
             'object': self.external_object,
             'title': _('Comments for document: %s') % self.external_object,
         }
+
+    def get_source_queryset(self):
+        return self.external_object.comments.all()
+
+class DocumentCommentListPrint(ExternalObjectViewMixin, SingleObjectListView):
+    external_object_class = Document
+    external_object_permission = permission_document_comment_view
+    external_object_pk_url_kwarg = 'document_id'
+
+    def get_extra_context(self):
+        instance = self.external_object
+
+        context = {
+            'form_action': reverse(
+                viewname='documents:document_print', kwargs={
+                    'document_id': instance.pk
+                }
+            ),
+            'object': instance,
+            'title': f'{instance.label}. ID:{instance.id}',
+            'appearance_type': 'plain',
+            'comments': self.get_source_queryset(),
+            'width': setting_print_width.value,
+            'height': setting_print_height.value,
+        }
+
+        return context
+
+    def get_template_names(self):
+        return ('document_comments/comments_print.html',)
 
     def get_source_queryset(self):
         return self.external_object.comments.all()
