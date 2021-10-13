@@ -39,5 +39,5 @@ python_gnupg==0.4.6
 pytz==2020.1
 requests==2.25.1
 sh==1.14.1
-swagger-spec-validator==2.5.0
+swagger-spec-validator==2.7.3
 whitenoise==5.0.1

@@ -20,7 +20,7 @@ x-mayan-container:
     MAYAN_LOCK_MANAGER_BACKEND_ARGUMENTS: "{'redis_url':'redis://:${MAYAN_REDIS_PASSWORD:-mayanredispassword}@redis:6379/2'}"
     # Replace with the line below when using RabbitMQ
     # MAYAN_DOCKER_WAIT: "${MAYAN_DATABASE_HOST:-postgresql}:5432 redis:6379 rabbitmq:5672"
-  image: ${MAYAN_DOCKER_IMAGE_NAME:-mayanedms/mayanedms}:${MAYAN_DOCKER_IMAGE_TAG:-s4.0}
+  image: ${MAYAN_DOCKER_IMAGE_NAME:-mayanedms/mayanedms}:${MAYAN_DOCKER_IMAGE_TAG:-4.0.1}
   networks:
     - bridge
   restart: unless-stopped
@@ -64,12 +64,11 @@ services:
       POSTGRES_DB: ${MAYAN_DATABASE_NAME:-mayan}
       POSTGRES_PASSWORD: ${MAYAN_DATABASE_PASSWORD:-mayandbpass}
       POSTGRES_USER: ${MAYAN_DATABASE_USER:-mayan}
-    image: postgres:${MAYAN_DOCKER_POSTGRES_TAG:-10.15-alpine}
+    image: postgres:${MAYAN_DOCKER_POSTGRES_TAG:-10.6}
     networks:
       - bridge
-    # Disable to allow external access to the database.
-    # ports:
-    #  - "5432:5432"
+    ports:
+     - "${MAYAN_DB_PORT:-5432}:5432"
     restart: unless-stopped
     volumes:
       - ${MAYAN_POSTGRES_VOLUME:-postgres}:/var/lib/postgresql/data
@@ -213,8 +212,21 @@ services:
   #   volumes:
   #      - ${MAYAN_RABBITMQ_VOLUME:-rabbitmq}:/var/lib/rabbitmq
 
+  automation-api:
+    depends_on:
+      - app
+    build: ${MAYAN_AUTO_APP:-aapi}
+    command: python manage.py runserver 0.0.0.0:8080
+    networks:
+      - bridge
+    volumes:
+     - ${MAYAN_AUTO_APP:-aapi}:/myCode
+    ports:
+     - "8000:8080"
+
 volumes:
   app:
+  aapi:
   postgres:
   mountindex:
   rabbitmq:
