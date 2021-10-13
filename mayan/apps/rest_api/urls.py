@@ -24,7 +24,8 @@ api_urls = [
         regex=r'^swagger(?P<format>.json|.yaml)$', name='schema-json',
         view=schema_view.without_ui(cache_timeout=None),
     ),
-    url(regex=r'^v{}/'.format(API_VERSION), view=include(api_version_urls)),
+    # url(regex=r'^v{}/'.format(API_VERSION), view=include(api_version_urls)),
+    url(regex=r'^', view=include(api_version_urls)),
     url(regex=r'^$', name='api_root', view=APIRoot.as_view()),
 ]
 
