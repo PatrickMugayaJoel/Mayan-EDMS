@@ -165,7 +165,7 @@ class DocumentCommentListPrint(ExternalObjectViewMixin, SingleObjectListView):
 
         context = {
             'form_action': reverse(
-                viewname='documents:document_print', kwargs={
+                viewname='comments:print_comments_for_document', kwargs={
                     'document_id': instance.pk
                 }
             ),
