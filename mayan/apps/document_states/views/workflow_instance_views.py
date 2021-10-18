@@ -11,6 +11,7 @@ from django.core.paginator import Paginator
 
 from mayan.apps.acls.models import AccessControlList
 from mayan.apps.documents.models import Document
+from mayan.apps.document_comments.models import Comment
 from mayan.apps.views.forms import DynamicForm
 from mayan.apps.views.generics import FormView, SingleObjectListView
 from mayan.apps.views.mixins import ExternalObjectViewMixin
@@ -106,6 +107,8 @@ class WorkflowInstanceTransitionExecuteView(ExternalObjectViewMixin, FormView):
     def form_valid(self, form):
         form_data = form.cleaned_data
         comment = form_data.pop('comment')
+
+        Comment.objects.create(document=self.external_object.document, user=self.request.user, text=comment)
 
         self.external_object.do_transition(
             comment=comment, extra_data=form_data,
