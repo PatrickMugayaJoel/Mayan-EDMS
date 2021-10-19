@@ -258,7 +258,7 @@ class WorkflowDocumentsReport(View):
         trans = []
 
         transitions = Document.objects.raw(f"""SELECT swi.document_id AS id, json_agg(swil.datetime) AS dates,
-                json_agg(sws_d.label) AS dest
+                json_agg(sws_d.label) AS dest, swil.workflow_instance_id AS instance_id
                 FROM document_states_workflowinstance swi, document_states_workflowinstancelogentry swil,
                 document_states_workflowtransition swt,
                 document_states_workflowstate sws_d
@@ -274,7 +274,7 @@ class WorkflowDocumentsReport(View):
             if len(transition.dates) > 2:
                 tempObj = {}
                 tempObj['id'] = transition.id
-                tempObj['url'] = f"/documents/documents/{transition.id}/preview/"
+                tempObj['url'] = f"/workflows/documents/workflows/{transition.instance_id}/"
                 states = []
 
                 for i in range(len(transition.dates)):
