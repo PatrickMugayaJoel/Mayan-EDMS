@@ -108,7 +108,8 @@ class WorkflowInstanceTransitionExecuteView(ExternalObjectViewMixin, FormView):
         form_data = form.cleaned_data
         comment = form_data.pop('comment')
 
-        Comment.objects.create(document=self.external_object.document, user=self.request.user, text=comment)
+        if comment:
+            Comment.objects.create(document=self.external_object.document, user=self.request.user, text=comment)
 
         self.external_object.do_transition(
             comment=comment, extra_data=form_data,
