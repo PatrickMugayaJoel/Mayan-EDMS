@@ -406,7 +406,10 @@ class POP3Email(EmailBaseModel):
         logger.debug('ssl: %s', self.ssl)
 
         if self.ssl:
-            server = poplib.POP3_SSL(host=self.host, port=self.port)
+            try:
+                server = poplib.POP3_SSL(host=self.host, port=self.port)
+            except Exception as ex:
+                print("\n\nThe email error thing happened again!\n\n")
         else:
             server = poplib.POP3(
                 host=self.host, port=self.port, timeout=self.timeout
