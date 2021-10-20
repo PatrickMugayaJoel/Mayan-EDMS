@@ -404,41 +404,42 @@ class POP3Email(EmailBaseModel):
         logger.debug(msg='Starting POP3 email fetch')
         logger.debug('host: %s', self.host)
         logger.debug('ssl: %s', self.ssl)
-
-        if self.ssl:
-            try:
+        
+        try:
+            if self.ssl:
                 server = poplib.POP3_SSL(host=self.host, port=self.port)
-            except Exception as ex:
-                print("\n\nThe email error thing happened again!\n\n")
-        else:
-            server = poplib.POP3(
-                host=self.host, port=self.port, timeout=self.timeout
-            )
+            else:
+                server = poplib.POP3(
+                    host=self.host, port=self.port, timeout=self.timeout
+                )
 
-        server.getwelcome()
-        server.user(self.username)
-        server.pass_(self.password)
+            server.getwelcome()
+            server.user(self.username)
+            server.pass_(self.password)
 
-        messages_info = server.list()
+            messages_info = server.list()
 
-        logger.debug(msg='messages_info:')
-        logger.debug(msg=messages_info)
-        logger.debug('messages count: %s', len(messages_info[1]))
+            logger.debug(msg='messages_info:')
+            logger.debug(msg=messages_info)
+            logger.debug('messages count: %s', len(messages_info[1]))
 
-        for message_info in messages_info[1]:
-            message_number, message_size = message_info.split()
-            message_number = int(message_number)
+            for message_info in messages_info[1]:
+                message_number, message_size = message_info.split()
+                message_number = int(message_number)
 
-            logger.debug('message_number: %s', message_number)
-            logger.debug('message_size: %s', message_size)
+                logger.debug('message_number: %s', message_number)
+                logger.debug('message_size: %s', message_size)
 
-            message_lines = server.retr(which=message_number)[1]
-            message_complete = force_text(s=b'\n'.join(message_lines))
+                message_lines = server.retr(which=message_number)[1]
+                message_complete = force_text(s=b'\n'.join(message_lines))
 
-            EmailBaseModel.process_message(
-                source=self, message_text=message_complete
-            )
-            if not test:
-                server.dele(which=message_number)
+                EmailBaseModel.process_message(
+                    source=self, message_text=message_complete
+                )
+                if not test:
+                    server.dele(which=message_number)
+
+        except Exception as ex:
+            print("\n\nThe email error thing happened again!\n\n")
 
         server.quit()
