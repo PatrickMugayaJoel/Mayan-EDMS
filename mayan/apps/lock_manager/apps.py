@@ -31,8 +31,13 @@ class LockManagerApp(MayanAppConfig):
                 )
                 lock.release()
             except Exception as exception:
-                raise RuntimeError(
+                # raise RuntimeError(
+                #     'Error initializing the locking backend: {}; {}'.format(
+                #         setting_backend.value, exception
+                #     )
+                # ) from exception
+                print(
                     'Error initializing the locking backend: {}; {}'.format(
                         setting_backend.value, exception
                     )
-                ) from exception
+                )
