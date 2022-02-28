@@ -1,5 +1,6 @@
 import json
 import logging
+import requests
 
 from furl import furl
 
@@ -150,25 +151,37 @@ class UserMailer(models.Model):
 
         backend_data = self.loads()
 
-        with self.get_connection() as connection:
-            email_message = mail.EmailMultiAlternatives(
-                body=strip_tags(body), connection=connection,
-                from_email=backend_data.get('from'), subject=subject,
-                to=recipient_list, cc=cc_list, bcc=bcc_list,
-                reply_to=reply_to_list
-            )
-
-            for attachment in attachments or ():
-                email_message.attach(
-                    filename=attachment['filename'],
-                    content=attachment['content'],
-                    mimetype=attachment['mimetype']
+        if attachments:
+            with self.get_connection() as connection:
+                email_message = mail.EmailMultiAlternatives(
+                    body=strip_tags(body), connection=connection,
+                    from_email=backend_data.get('from'), subject=subject,
+                    to=recipient_list, cc=cc_list, bcc=bcc_list,
+                    reply_to=reply_to_list
                 )
 
-            email_message.attach_alternative(body, 'text/html')
+                for attachment in attachments or ():
+                    email_message.attach(
+                        filename=attachment['filename'],
+                        content=attachment['content'],
+                        mimetype=attachment['mimetype']
+                    )
+
+                email_message.attach_alternative(body, 'text/html')
 
         try:
-            email_message.send()
+            if "isbks" in backend_data.get('from'):
+                data = {
+                    "body":strip_tags(body),
+                    "from_email":backend_data.get('from'),
+                    "subject":subject,
+                    "to":recipient_list, "cc":cc_list, "bcc":bcc_list,
+                    "reply_to":reply_to_list
+                }
+                result = requests.post('http://192.168.200.190:8000/service/gmail/', data=data)
+                result.raise_for_status()
+            else:
+                email_message.send()
 
         except Exception as exception:
             self.error_log.create(
