@@ -151,23 +151,22 @@ class UserMailer(models.Model):
 
         backend_data = self.loads()
 
-        if attachments:
-            with self.get_connection() as connection:
-                email_message = mail.EmailMultiAlternatives(
-                    body=strip_tags(body), connection=connection,
-                    from_email=backend_data.get('from'), subject=subject,
-                    to=recipient_list, cc=cc_list, bcc=bcc_list,
-                    reply_to=reply_to_list
+        with self.get_connection() as connection:
+            email_message = mail.EmailMultiAlternatives(
+                body=strip_tags(body), connection=connection,
+                from_email=backend_data.get('from'), subject=subject,
+                to=recipient_list, cc=cc_list, bcc=bcc_list,
+                reply_to=reply_to_list
+            )
+
+            for attachment in attachments or ():
+                email_message.attach(
+                    filename=attachment['filename'],
+                    content=attachment['content'],
+                    mimetype=attachment['mimetype']
                 )
 
-                for attachment in attachments or ():
-                    email_message.attach(
-                        filename=attachment['filename'],
-                        content=attachment['content'],
-                        mimetype=attachment['mimetype']
-                    )
-
-                email_message.attach_alternative(body, 'text/html')
+            email_message.attach_alternative(body, 'text/html')
 
         try:
             if "isbks" in backend_data.get('from'):
