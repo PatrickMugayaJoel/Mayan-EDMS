@@ -1,9 +1,11 @@
+import logging
 from django.shortcuts import get_object_or_404
 
 from mayan.apps.views.http import URL
 
 from .models import DocumentMetadata, MetadataType
 
+logger = logging.getLogger(name=__name__)
 
 def decode_metadata_from_querystring(querystring=None):
     """
@@ -92,6 +94,10 @@ def set_bulk_metadata(document, metadata_dictionary):
         metadata_type = MetadataType.objects.get(name=metadata_type_name)
 
         if document_type_metadata_types.filter(metadata_type=metadata_type).exists():
-            DocumentMetadata.objects.get_or_create(
-                document=document, metadata_type=metadata_type, value=value
-            )
+            try:
+                DocumentMetadata.objects.get_or_create(
+                    document=document, metadata_type=metadata_type, value=value
+                )
+            except Exception as e:
+                logger.error('*****************joel***********************' + str(e))
+

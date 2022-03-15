@@ -127,14 +127,13 @@ class EmailBaseModel(IntervalBaseModel):
 
         if document_ids:
             metadata_dictionary["id"] = document_ids[0]
-            metadata_dictionary["hasMultipleAttachments"] = len(document_ids)
+            metadata_dictionary["attachments"] = len(document_ids)
 
-            if metadata_dictionary:
-                for document in Document.objects.filter(id__in=document_ids):
-                    set_bulk_metadata(
-                        document=document,
-                        metadata_dictionary=metadata_dictionary
-                    )
+            for document in Document.objects.filter(id__in=document_ids):
+                set_bulk_metadata(
+                    document=document,
+                    metadata_dictionary=metadata_dictionary
+                )
 
     @staticmethod
     def _select_email(emailslist):
