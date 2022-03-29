@@ -134,7 +134,7 @@ class APISendMailReminders(APIView):
 
     def get(self, request, *args, **kwargs):
 
-        pending_stages = Document.objects.raw(f"""SELECT nested.workflow as wx, nested.state_id as id, count(nested.state_id) as ecount, nts.email
+        pending_stages = Document.objects.raw(f"""SELECT nested.workflow as wx, nested.state_id as state_id, nested.state_id as id, count(nested.state_id) as ecount, nts.email
             FROM (
                 SELECT DISTINCT ON(id) swi.id AS id, swi.workflow_id AS workflow, sws.id AS state_id, max(swil.datetime) AS datetime
                 FROM document_states_workflowinstance swi, document_states_workflowinstancelogentry swil,
@@ -144,11 +144,32 @@ class APISendMailReminders(APIView):
                     AND swil.transition_id = swt.id
                     AND swt.destination_state_id = sws.id
                 group by swi.id, sws.id
-                order by id, datetime desc) AS nested, nic_tracked_states nts
+                order by id, datetime desc
+            ) AS nested, nic_tracked_states nts
             WHERE nested.state_id in (SELECT state_id FROM public."nic_tracked_states")
             AND nested.state_id = nts.state_id
             AND nested.datetime < (now() - '20 hours'::interval)
-            group by nts.email, nested.state_id, nested.workflow;""")
+            group by nts.email, nested.state_id, nested.workflow
+
+            UNION
+
+            SELECT max(9) AS wx, max(66) AS state_id, max(swi.document_id) AS id, count(md.value) as ecount, md.value AS email
+            FROM document_states_workflowinstance swi, document_states_workflowinstancelogentry swil, metadata_documentmetadata md
+            WHERE swi.workflow_id = 9
+            AND md.metadata_type_id = 16
+            AND swil.transition_id = 308
+            AND md.document_id = swi.document_id
+            AND swil.workflow_instance_id = swi.id
+            AND swi.document_id NOT IN (
+            select wi.document_id
+            FROM document_states_workflowinstance wi
+            join document_states_workflowinstancelogentry wg
+            on wg.workflow_instance_id = wi.id
+            WHERE wi.workflow_id = 9
+            AND wg.transition_id in (187, 302, 189, 307, 85, 87, 88, 89, 178))
+            AND swil.datetime < (now() - '20 hours'::interval)
+            group by md.value;"""
+        )
 
         today = date.today()
         de = today.strftime("%d/%m/%Y")
@@ -181,7 +202,7 @@ class APISendMailReminders(APIView):
             This is a kind reminder, {stage.ecount} {workflow} {grammer[0]} not been attended to in 24hrs.<br><br>
 
             Below is a link to the state documents.<br>
-            <a href='http://192.168.200.190/#/workflows/workflow_runtime_proxies/states/{stage.id}/documents/'>http://192.168.200.190/#/workflows/workflow_runtime_proxies/states/{stage.id}/documents/</a><br><br>
+            <a href='http://192.168.200.190/#/workflows/workflow_runtime_proxies/states/{stage.state_id}/documents/'>http://192.168.200.190/#/workflows/workflow_runtime_proxies/states/{stage.state_id}/documents/</a><br><br>
 
             ----<br>
             This email was sent by Mayan Edms.

@@ -172,7 +172,7 @@ class DocumentCommentListPrint(ExternalObjectViewMixin, SingleObjectListView):
             'object': instance,
             'title': f'{instance.label}. ID:{instance.id}',
             'appearance_type': 'plain',
-            'comments': self.get_source_queryset(),
+            'comments': instance.comments.all(),
             'width': setting_print_width.value,
             'height': setting_print_height.value,
         }

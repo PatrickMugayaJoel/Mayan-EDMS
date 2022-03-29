@@ -26,20 +26,11 @@ class DateValidator(MetadataValidator):
         return parse(input_data).date().isoformat()
 
 
-# class TimeValidator(MetadataValidator):
-#     def execute(self, input_data):
-#         return parse(input_data).time().isoformat()
-
-# this is => PhoneNumbervalidator class
 class TimeValidator(MetadataValidator):
     def execute(self, input_data):
-        rule = re.compile(r'(^[+]{1})*([0-9]{12,14}$)')
-        if not rule.search(input_data):
-            raise ValidationError("Phone Number must start with '+' and have atleast 13 characters.")
-        return input_data
+        return parse(input_data).time().isoformat()
 
 
 MetadataValidator.register(parser=DateAndTimeValidator)
 MetadataValidator.register(parser=DateValidator)
 MetadataValidator.register(parser=TimeValidator)
-# MetadataValidator.register(parser=PhoneNumbervalidator)

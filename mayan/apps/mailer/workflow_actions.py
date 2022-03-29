@@ -143,7 +143,7 @@ class EmailAction(WorkflowAction):
             )
             user_mailer.send_document(**kwargs)
         else:
-            thread = threading.Thread(target=user_mailer.send, args=[recipient, None, subject, body, cc, bcc, reply_to])
+            thread = threading.Thread(target=user_mailer.send, args=[recipient, None, subject, body, cc, bcc])
             thread.start()
 
     def get_form_schema(self, **kwargs):
