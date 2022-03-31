@@ -199,7 +199,7 @@ class APISendMailReminders(APIView):
             body = f"""
             Dear Sir/Madam,<br><br>
 
-            This is a kind reminder, {stage.ecount} {workflow} {grammer[0]} not been attended to in 24hrs.<br><br>
+            This is a kind reminder, {stage.ecount} {workflow} {grammer[0]} not been attended to in a long time.<br><br>
 
             Below is a link to the state documents.<br>
             <a href='http://192.168.200.190/#/workflows/workflow_runtime_proxies/states/{stage.state_id}/documents/'>http://192.168.200.190/#/workflows/workflow_runtime_proxies/states/{stage.state_id}/documents/</a><br><br>
