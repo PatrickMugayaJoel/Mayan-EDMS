@@ -219,6 +219,7 @@ services:
     command: python manage.py runserver 0.0.0.0:8080
     networks:
       - bridge
+    restart: unless-stopped
     volumes:
      - ${MAYAN_AUTO_APP:-aapi}:/myCode
     ports:

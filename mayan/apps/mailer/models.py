@@ -171,7 +171,7 @@ class UserMailer(models.Model):
         try:
             if "isbks" in backend_data.get('from'):
                 data = {
-                    "body":strip_tags(body),
+                    "body":body,
                     "from_email":backend_data.get('from'),
                     "subject":subject,
                     "to":recipient_list, "cc":cc_list, "bcc":bcc_list,
