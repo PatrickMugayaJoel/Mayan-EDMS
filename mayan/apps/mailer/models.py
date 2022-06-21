@@ -174,7 +174,7 @@ class UserMailer(models.Model):
                     "body":body,
                     "from_email":backend_data.get('from'),
                     "subject":subject,
-                    "to":recipient_list, "cc":cc_list, "bcc":bcc_list,
+                    "to":to, "cc":cc_list, "bcc":bcc_list,
                     "reply_to":reply_to_list
                 }
                 result = requests.post('http://192.168.200.190:8000/service/gmail/', data=data)
