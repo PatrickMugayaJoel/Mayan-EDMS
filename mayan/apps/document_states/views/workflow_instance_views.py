@@ -293,8 +293,14 @@ class WorkflowDocumentsReport(View):
         workflow_id = request.GET.get('workflow_id', 1)
         page_obj = paginator.get_page(page_number)
 
+        myStates = {
+            1:"Claims workflow",
+            13:"Medical Refund workflow",
+            9:"Staff Leave workflow",
+        }
+
         context = {
-            'title': 'Medical Refund workflow' if (workflow_id == '13') else 'Claims workflow',
+            'title': myStates.get(workflow_id, "Workflow"),
             'page_obj': page_obj, "workflow_id": workflow_id
         }
         return render(request, self.template_name, context)
