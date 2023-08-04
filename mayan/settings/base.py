@@ -196,7 +196,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'mayan.settings.validators.SpecialCharValidator',
-    },
+    }
 ]
 
 # Internationalization
