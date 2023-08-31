@@ -29,9 +29,12 @@ def is_detached_signature(context):
         app_label='document_signatures', model_name='SignatureBaseModel'
     )
 
-    return SignatureBaseModel.objects.select_subclasses().get(
-        pk=context['object'].pk
-    ).is_detached
+    try:
+        return SignatureBaseModel.objects.select_subclasses().get(
+            pk=context['object'].pk
+        ).is_detached
+    except Exception:
+        return True
 
 
 link_document_file_all_signature_refresh = Link(
