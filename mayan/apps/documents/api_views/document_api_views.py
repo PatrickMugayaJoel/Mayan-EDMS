@@ -158,7 +158,7 @@ class APISendMailReminders(APIView):
             FROM document_states_workflowinstance swi, document_states_workflowinstancelogentry swil, metadata_documentmetadata md, document_states_workflow wf
             WHERE swi.workflow_id = 9
             AND md.metadata_type_id = 16
-            AND swil.transition_id = 308
+            AND swil.transition_id in (308, 178, 315, 337, 316)
             AND md.document_id = swi.document_id
             AND swil.workflow_instance_id = swi.id
             AND swi.document_id NOT IN (
@@ -167,7 +167,7 @@ class APISendMailReminders(APIView):
                 join document_states_workflowinstancelogentry wg
                 on wg.workflow_instance_id = wi.id
                 WHERE wi.workflow_id = 9
-                AND wg.transition_id in (187, 302, 189, 307, 85, 87, 88, 89, 178)
+                AND wg.transition_id in (329, 330, 85, 352, 87, 187)
             )
             AND swil.datetime < (now() - '20 hours'::interval)
             AND wf.id = swi.workflow_id
