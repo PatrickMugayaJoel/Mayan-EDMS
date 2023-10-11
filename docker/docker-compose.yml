@@ -212,22 +212,8 @@ services:
   #   volumes:
   #      - ${MAYAN_RABBITMQ_VOLUME:-rabbitmq}:/var/lib/rabbitmq
 
-  automation-api:
-    depends_on:
-      - app
-    build: ${MAYAN_AUTO_APP:-aapi}
-    command: python manage.py runserver 0.0.0.0:8080
-    networks:
-      - bridge
-    restart: unless-stopped
-    volumes:
-     - ${MAYAN_AUTO_APP:-aapi}:/myCode
-    ports:
-     - "8000:8080"
-
 volumes:
   app:
-  aapi:
   postgres:
   mountindex:
   rabbitmq:
