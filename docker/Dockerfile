@@ -193,9 +193,10 @@ RUN set -a \
 && apt-get clean autoclean \
 && apt-get autoremove --purge --yes \
 && rm -rf /var/lib/apt/lists/* \
-&& rm -f /var/cache/apt/archives/*.deb \
+&& rm -f /var/cache/apt/archives/*.deb
+
 # Remove temporary files owned by root from the platformtemplate step.
-&& rm -f /tmp/* \
+RUN rm -f /tmp/* \
 # Keep displaying log messages to stdout
 && find /var/log -type f | while read f; do echo -ne '' > $f; done \
 # Delete Debian package proxy used for the base image.
