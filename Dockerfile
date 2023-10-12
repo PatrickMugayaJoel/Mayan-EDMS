@@ -1,3 +1,4 @@
+# docker build . --tag nic-edms:1.00
 # vim:set ft=dockerfile:
 
 ####
