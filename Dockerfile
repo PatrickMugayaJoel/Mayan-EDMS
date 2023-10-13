@@ -156,14 +156,15 @@ RUN set -a \
 && pip install --no-cache-dir --requirement /src/requirements/build.txt
 
 # Build Mayan EDMS.
-RUN python3 setup.py sdist \
-&& pip wheel --no-index --no-deps --wheel-dir dist dist/mayan-edms-*.tar.gz
-
+RUN set -a \
+&& . /config.env \
+&& set +a \
+&& python3 setup.py sdist \
+&& pip wheel --no-index --no-deps --wheel-dir dist dist/mayan-edms-*.tar.gz \
 # Install the built Mayan EDMS package.
-RUN pip install --no-cache-dir dist/mayan_edms-*.whl
-
+&& pip install --no-cache-dir dist/mayan_edms-*.whl \
 # Install the static content.
-RUN mayan-edms.py installdependencies \
+&& mayan-edms.py installdependencies \
 && MAYAN_STATIC_ROOT=${PROJECT_INSTALL_DIR}static mayan-edms.py preparestatic --link --noinput
 
 COPY --chown=mayan:mayan requirements/testing-base.txt "${PROJECT_INSTALL_DIR}"
