@@ -68,8 +68,8 @@ services:
     networks:
       - bridge
     # Disable to allow external access to the database.
-    # ports:
-    #  - "5432:5432"
+    ports:
+     - "5433:5432"
     restart: unless-stopped
     volumes:
       - ${MAYAN_POSTGRES_VOLUME:-postgres}:/var/lib/postgresql/data
