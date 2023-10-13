@@ -72,6 +72,7 @@ INSTALLED_APPS = (
     'stronghold',
     'widget_tweaks',
     'axes',
+    'password_expire',
     # Base apps
     # Moved to the top to ensure Mayan app logging is initialized and
     # available as soon as possible.
@@ -144,6 +145,7 @@ MIDDLEWARE = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'mayan.apps.authentication.middleware.impersonate.ImpersonateMiddleware',
+    'password_expire.middleware.PasswordExpireMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -206,6 +208,15 @@ AUTH_PASSWORD_VALIDATORS = [
 #https://django-axes.readthedocs.io/en/latest/index.html
 
 AXES_LOCKOUT_PARAMETERS = ["username"]
+
+# contact information if password is expired
+PASSWORD_EXPIRE_CONTACT = "IT <it@nic.co.ug>"
+# expire passwords after 90 days
+PASSWORD_EXPIRE_SECONDS = 90 * 24 * 60 * 60
+# start warning 10 days before expiration
+PASSWORD_EXPIRE_WARN_SECONDS = 10 * 24 * 60 * 60
+# Exclude superusers from the password expiration
+PASSWORD_EXPIRE_EXCLUDE_SUPERUSERS = True
 
 
 # Internationalization
