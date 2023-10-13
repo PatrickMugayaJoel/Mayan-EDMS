@@ -6,6 +6,7 @@ from rest_framework.response import Response
 
 from mayan.apps.acls.models import AccessControlList
 from mayan.apps.rest_api import generics
+from mayan.apps.document_states.tasks import task_launch_workflow_for
 
 from ..models.document_models import Document
 from ..models.document_type_models import DocumentType
@@ -96,6 +97,10 @@ class APIDocumentChangeTypeView(generics.GenericAPIView):
         self.get_object().document_type_change(
             document_type=document_type, _user=self.request.user
         )
+
+        if serializer.validated_data['document_id']:
+            task_launch_workflow_for(serializer.validated_data['document_id'], serializer.validated_data['workflow_id'])
+
         return Response(status=status.HTTP_200_OK)
 
 
