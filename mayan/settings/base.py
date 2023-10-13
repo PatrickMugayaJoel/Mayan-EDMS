@@ -190,6 +190,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'
+    },
+    {
+        'NAME': 'mayan.settings.validators.UppercaseValidator',
+    },
+    {
+        'NAME': 'mayan.settings.validators.SpecialCharValidator',
     }
 ]
 
