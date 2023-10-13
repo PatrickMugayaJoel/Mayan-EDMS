@@ -153,12 +153,8 @@ RUN set -a \
     psutil==${PYTHON_PSUTIL_VERSION} \
 ; fi \
 # Install the Python packages needed to build Mayan EDMS.
-&& pip install --no-cache-dir --requirement /src/requirements/build.txt
-
+&& pip install --no-cache-dir --requirement /src/requirements/build.txt \
 # Build Mayan EDMS.
-RUN set -a \
-&& . /config.env \
-&& set +a \
 && python3 setup.py sdist \
 && pip wheel --no-index --no-deps --wheel-dir dist dist/mayan-edms-*.tar.gz \
 # Install the built Mayan EDMS package.
