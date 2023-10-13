@@ -126,4 +126,4 @@ class WorkflowRuntimeProxyStateListView(
     def get_source_queryset(self):
         return WorkflowStateRuntimeProxy.objects.filter(
             workflow=self.external_object
-        )
+        ).order_by('completion', 'label')
