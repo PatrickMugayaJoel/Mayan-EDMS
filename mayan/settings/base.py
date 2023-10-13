@@ -71,6 +71,7 @@ INSTALLED_APPS = (
     'solo',
     'stronghold',
     'widget_tweaks',
+    'axes',
     # Base apps
     # Moved to the top to ensure Mayan app logging is initialized and
     # available as soon as possible.
@@ -148,7 +149,8 @@ MIDDLEWARE = (
     'django.middleware.locale.LocaleMiddleware',
     'mayan.apps.locales.middleware.timezone.TimezoneMiddleware',
     'stronghold.middleware.LoginRequiredMiddleware',
-    'mayan.apps.common.middleware.ajax_redirect.AjaxRedirect'
+    'mayan.apps.common.middleware.ajax_redirect.AjaxRedirect',
+    'axes.middleware.AxesMiddleware',
 )
 
 ROOT_URLCONF = 'mayan.urls'
@@ -361,3 +363,10 @@ if not DATABASES:
                 'NAME': os.path.join(MEDIA_ROOT, 'db.sqlite3')  # NOQA: F821
             }
         }
+
+AUTHENTICATION_BACKENDS = [
+    # AxesBackend should be the first backend in the AUTHENTICATION_BACKENDS list.
+    'axes.backends.AxesBackend',
+    # Django ModelBackend is the default authentication backend.
+    'django.contrib.auth.backends.ModelBackend',
+]
