@@ -201,6 +201,13 @@ AUTH_PASSWORD_VALIDATORS = [
     }
 ]
 
+
+# Axes config
+#https://django-axes.readthedocs.io/en/latest/index.html
+
+AXES_LOCKOUT_PARAMETERS = ["username"]
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
