@@ -2,3 +2,4 @@ twine==3.4.1
 wheel==0.36.2
 importlib-metadata==4.13.0
 django-axes==6.1.1
+django-password-expire==0.2
