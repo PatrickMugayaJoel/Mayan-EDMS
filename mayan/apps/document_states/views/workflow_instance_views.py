@@ -10,6 +10,7 @@ from mayan.apps.documents.models import Document
 from mayan.apps.views.forms import DynamicForm
 from mayan.apps.views.generics import FormView, SingleObjectListView
 from mayan.apps.views.mixins import ExternalObjectViewMixin
+from mayan.apps.document_comments.models import Comment
 
 from ..forms import WorkflowInstanceTransitionSelectForm
 from ..icons import icon_workflow_instance_detail, icon_workflow_template_list
@@ -102,6 +103,9 @@ class WorkflowInstanceTransitionExecuteView(ExternalObjectViewMixin, FormView):
     def form_valid(self, form):
         form_data = form.cleaned_data
         comment = form_data.pop('comment')
+
+        if comment:
+            Comment.objects.create(document=self.external_object.document, user=self.request.user, text=comment)
 
         self.external_object.do_transition(
             comment=comment, extra_data=form_data,
