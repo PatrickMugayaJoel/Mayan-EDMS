@@ -153,15 +153,17 @@ RUN set -a \
     psutil==${PYTHON_PSUTIL_VERSION} \
 ; fi \
 # Install the Python packages needed to build Mayan EDMS.
-pip install --no-cache-dir --requirement /src/requirements/build.txt
+&& pip install --no-cache-dir --requirement /src/requirements/build.txt
 
 # Build Mayan EDMS.
 RUN python3 setup.py sdist \
-&& pip wheel --no-index --no-deps --wheel-dir dist dist/mayan-edms-*.tar.gz \
+&& pip wheel --no-index --no-deps --wheel-dir dist dist/mayan-edms-*.tar.gz
+
 # Install the built Mayan EDMS package.
-&& pip install --no-cache-dir dist/mayan_edms-*.whl \
+RUN pip install --no-cache-dir dist/mayan_edms-*.whl
+
 # Install the static content.
-&& mayan-edms.py installdependencies \
+RUN mayan-edms.py installdependencies \
 && MAYAN_STATIC_ROOT=${PROJECT_INSTALL_DIR}static mayan-edms.py preparestatic --link --noinput
 
 COPY --chown=mayan:mayan requirements/testing-base.txt "${PROJECT_INSTALL_DIR}"
