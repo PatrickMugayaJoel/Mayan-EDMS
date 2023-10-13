@@ -72,7 +72,6 @@ INSTALLED_APPS = (
     'stronghold',
     'widget_tweaks',
     'axes',
-    'account',
     # Base apps
     # Moved to the top to ensure Mayan app logging is initialized and
     # available as soon as possible.
@@ -154,12 +153,6 @@ MIDDLEWARE = (
     'axes.middleware.AxesMiddleware',
 )
 
-MIDDLEWARE_CLASSES = [
-    "account.middleware.LocaleMiddleware",
-    "account.middleware.TimezoneMiddleware",
-    "account.middleware.ExpiredPasswordMiddleware"
-]
-
 ROOT_URLCONF = 'mayan.urls'
 
 TEMPLATES = [
@@ -172,10 +165,7 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-
-                # add django-user-accounts context processor
-                'account.context_processors.account'
+                'django.contrib.messages.context_processors.messages'
             ],
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
@@ -384,8 +374,6 @@ if not DATABASES:
 AUTHENTICATION_BACKENDS = [
     # AxesBackend should be the first backend in the AUTHENTICATION_BACKENDS list.
     'axes.backends.AxesBackend',
-    # django-user-accounts auth ModelBackend.
-    'account.auth_backends.AccountModelBackend',
     # Django ModelBackend is the default authentication backend.
     'django.contrib.auth.backends.ModelBackend',
 ]
