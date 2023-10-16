@@ -3,6 +3,7 @@
 
 {% load authentication_tags %}
 
+<!-- 
 {% authentication_impersonation_check as impersonated_user %}
 
 {% if impersonated_user %}
@@ -14,4 +15,15 @@
             <a class="btn btn-primary btn-xs" href="{% url 'authentication:user_impersonate_end' %}">{% trans 'Click here when finished' %}</a>
         </p>
     </div>
+{% endif %}
+-->
+
+{% if messages %}
+<div class="alert alert-warning">
+<ul class="messages">
+    {% for message in messages %}
+    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+</div>
 {% endif %}

@@ -24,6 +24,15 @@
                     <div class="content login">
                         <form action="." method="post" class="form login">{% csrf_token %}
                             <div class="group wat-cf">
+
+                                {% if messages %}
+                                {% for message in messages %}
+                                <div class="alert alert-danger" role="alert">
+                                    {{ message }}
+                                </div>
+                                {% endfor %}
+                                {% endif %}
+
                                 {% include 'appearance/generic_form_instance.html' %}
                                 <input type="hidden" name="next" value="{{ next|escape }}" />
                             <div class="form-group">
