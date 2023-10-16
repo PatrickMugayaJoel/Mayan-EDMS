@@ -58,6 +58,7 @@ apt-get update \
     sane-utils \
     sudo \
     tesseract-ocr \
+    nano \
 && apt-get install --no-install-recommends --target-release bullseye --yes \
     supervisor \
 # Remove make and build dependencies.
