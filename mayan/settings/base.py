@@ -210,7 +210,7 @@ AUTH_PASSWORD_VALIDATORS = [
 AXES_LOCKOUT_PARAMETERS = ["username"]
 
 # contact information if password is expired
-PASSWORD_EXPIRE_CONTACT = "IT <it@nic.co.ug>"
+PASSWORD_EXPIRE_CONTACT = "IT if you need help"
 # expire passwords after 90 days
 PASSWORD_EXPIRE_SECONDS = 90 * 24 * 60 * 60
 # start warning 10 days before expiration
