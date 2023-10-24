@@ -20,6 +20,9 @@ x-mayan-container:
     MAYAN_LOCK_MANAGER_BACKEND_ARGUMENTS: "{'redis_url':'redis://:${MAYAN_REDIS_PASSWORD:-mayanredispassword}@redis:6379/2'}"
     # Replace with the line below when using RabbitMQ
     # MAYAN_DOCKER_WAIT: "${MAYAN_DATABASE_HOST:-postgresql}:5432 redis:6379 rabbitmq:5672"
+    # Email
+    EMAIL_HOST_USER: "${EMAIL_HOST_USER}"
+    EMAIL_HOST_PASSWORD: "${EMAIL_HOST_PASSWORD}"
   image: ${MAYAN_DOCKER_IMAGE_NAME:-mayanedms/mayanedms}:${MAYAN_DOCKER_IMAGE_TAG:-s4.0}
   networks:
     - bridge

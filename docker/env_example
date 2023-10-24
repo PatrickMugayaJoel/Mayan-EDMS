@@ -1,0 +1,20 @@
+# Use this file to pass variables to Docker Compose to change how the
+# docker-compose.yml file is interpreted.
+
+# To pass values as environment variables to the running containers use
+# the env_file instead.
+
+# COMPOSE_PROJECT_NAME=nic-edms
+# MAYAN_DOCKER_IMAGE_NAME=mayan/mayan
+# MAYAN_DOCKER_IMAGE_TAG=4.0.1
+
+# MAYAN_APP_VOLUME=D:\docker-volumes\app-data
+# MAYAN_POSTGRES_VOLUME=D:\docker-volumes\postgres-data
+# MAYAN_DOCKER_POSTGRES_TAG=12.10-alpine
+
+EMAIL_HOST_USER='example@domain.com'
+EMAIL_HOST_PASSWORD='rstzrsdmnlbvzahd'
+
+# Enable to use the RabbitMQ image with the management plugin.
+# Also port mapping 15672:15672 in docker-compose file.
+MAYAN_DOCKER_RABBITMQ_TAG=3.8-management-alpine

@@ -209,6 +209,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AXES_LOCKOUT_PARAMETERS = ["username"]
 
+## django-password-expire
+######################################
 # contact information if password is expired
 PASSWORD_EXPIRE_CONTACT = "IT if you need help"
 # expire passwords after 90 days
@@ -219,6 +221,15 @@ PASSWORD_EXPIRE_WARN_SECONDS = 10 * 24 * 60 * 60
 PASSWORD_EXPIRE_EXCLUDE_SUPERUSERS = True
 # redirect new users to the change password page
 PASSWORD_EXPIRE_FORCE = True
+
+## Email settings. Required at password reset
+#############################################
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD= os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = 587
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
