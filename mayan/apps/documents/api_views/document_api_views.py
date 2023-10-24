@@ -97,10 +97,9 @@ class APIDocumentChangeTypeView(generics.GenericAPIView):
         self.get_object().document_type_change(
             document_type=document_type, _user=self.request.user
         )
-
-        if serializer.validated_data['document_id']:
-            task_launch_workflow_for(serializer.validated_data['document_id'], serializer.validated_data['workflow_id'])
-
+        
+        if request.data['document_id']:
+            task_launch_workflow_for(request.data['document_id'], request.data['workflow_id'])
         return Response(status=status.HTTP_200_OK)
 
 
