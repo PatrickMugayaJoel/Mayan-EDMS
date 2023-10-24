@@ -366,7 +366,7 @@ a i {
     }
 
     .has-sidebar {
-        padding-right: 160px;
+        padding-right: 160px !important;
     }
 }
 
