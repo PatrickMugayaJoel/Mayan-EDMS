@@ -1,4 +1,5 @@
 import logging
+import threading
 
 from django.utils.translation import ugettext_lazy as _
 
@@ -142,7 +143,8 @@ class EmailAction(WorkflowAction):
             )
             user_mailer.send_document(**kwargs)
         else:
-            user_mailer.send(**kwargs)
+            thread = threading.Thread(target=user_mailer.send, args=[recipient, None, subject, body, cc, bcc])
+            thread.start()
 
     def get_form_schema(self, **kwargs):
         result = super().get_form_schema(**kwargs)
