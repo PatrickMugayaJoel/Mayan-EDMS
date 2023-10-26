@@ -1,3 +1,5 @@
+import os
+
 from django.contrib import messages
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.views import (
@@ -141,7 +143,7 @@ class MayanPasswordResetView(StrongholdPublicMixin, PasswordResetView):
         'project_copyright': mayan.__copyright__,
         'project_license': mayan.__license__,
         'project_title': setting_project_title.value,
-        'project_website': setting_project_url.value
+        'project_website': os.environ.get('PROJECT_URL')
     }
     subject_template_name = 'authentication/password_reset_subject.txt'
     success_url = reverse_lazy(
