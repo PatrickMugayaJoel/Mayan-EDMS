@@ -167,7 +167,7 @@ class APISendMailReminders(APIView):
                 join document_states_workflowinstancelogentry wg
                 on wg.workflow_instance_id = wi.id
                 WHERE wi.workflow_id = 9
-                AND wg.transition_id in (329, 330, 85, 352, 87, 187, 419)
+                AND wg.transition_id in (329, 330, 85, 352, 87, 187, 419, 423)
             )
             AND swil.datetime < (now() - '20 hours'::interval)
             AND wf.id = swi.workflow_id
