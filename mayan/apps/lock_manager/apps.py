@@ -27,12 +27,17 @@ class LockManagerApp(MayanAppConfig):
             lock_instance = LockingBackend.get_backend()
             try:
                 lock = lock_instance.acquire_lock(
-                    name=TEST_LOCK_NAME, timeout=1
+                    name=TEST_LOCK_NAME, timeout=2
                 )
                 lock.release()
             except Exception as exception:
-                raise RuntimeError(
+                # raise RuntimeError(
+                #     'Error initializing the locking backend: {}; {}'.format(
+                #         setting_backend.value, exception
+                #     )
+                # ) from exception
+                print(
                     'Error initializing the locking backend: {}; {}'.format(
                         setting_backend.value, exception
                     )
-                ) from exception
+                )

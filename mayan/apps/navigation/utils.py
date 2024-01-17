@@ -99,7 +99,7 @@ def get_current_view_name(request):
     except Resolver404:
         # Can't figure out which view corresponds to this URL.
         # Most likely it is an invalid URL.
-        logger.warning(
+        print(
             'Can\'t figure out which view corresponds to this '
             'URL: %s; aborting menu resolution.', current_path
         )
