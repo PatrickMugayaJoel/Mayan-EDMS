@@ -74,6 +74,7 @@ class RedisLock(LockingBackend):
 
     def _release(self):
         try:
-            self._redis_lock_instance.release()
+            if self._redis_lock_instance:
+                self._redis_lock_instance.release()
         except redis.exceptions.LockNotOwnedError:
             return
